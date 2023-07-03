@@ -13,6 +13,11 @@ import os
 import guidance 
 import pyperclip 
 
+
+st.set_page_config(
+    page_title="GPT Prompt Help",
+)
+
 # Load environment variables
 config = dotenv_values(".env")
 os.environ["OPENAI_API_KEY"] = config["OPENAI_API_KEY"]
