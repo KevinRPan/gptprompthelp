@@ -36,9 +36,18 @@ llm3 = ChatOpenAI(model_name="gpt-3.5-turbo",
                  max_retries=4,
                  max_tokens=2000)
 
+
 gmodel4 = guidance.llms.OpenAI("gpt-4")
 
 gmodel3 = guidance.llms.OpenAI("gpt-3.5-turbo")
+
+USE_4 = False
+if USE_4:
+    llm = llm4
+    gmodel = gmodel4 
+else: 
+    llm = llm3 
+    gmodel = gmodel3 
 
 @st.cache_resource
 def improve_prompt(human_input, use4 = False):
@@ -100,7 +109,7 @@ def improve_prompt(human_input, use4 = False):
     prompt_template = ChatPromptTemplate.from_messages(
         [system_prompt, human_prompt])
         
-    chain = LLMChain(llm=llm3,
+    chain = LLMChain(llm=llm,
                      prompt=prompt_template)
 
     output = chain.run({"prompt": human_input,
@@ -133,7 +142,7 @@ def answer_prompt(human_input, use4 = False):
     prompt_template = ChatPromptTemplate.from_messages(
         [system_prompt,human_prompt])
         
-    chain = LLMChain(llm=llm4,
+    chain = LLMChain(llm=llm,
                      prompt=prompt_template)
 
     output = chain.run({"human_input": human_input,
@@ -167,7 +176,7 @@ def expert_answer(query):
     {{#assistant~}}
     {{gen 'answer' temperature=0 max_tokens=500}}
     {{~/assistant}}
-    ''', llm=gmodel4)
+    ''', llm=gmodel)
 
     expert_answer = experts(query=query)
     return expert_answer['answer']
@@ -194,7 +203,7 @@ def combine_answers(answers, initial_prompt):
     prompt_template = ChatPromptTemplate.from_messages(
         [system_prompt,human_prompt])
         
-    chain = LLMChain(llm=llm3,
+    chain = LLMChain(llm=llm,
                      prompt=prompt_template)
 
     output = chain.run({"answers_string": answers_string,
