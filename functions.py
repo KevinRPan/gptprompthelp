@@ -63,12 +63,13 @@ Consider an AI assistant whose codename is Athena. Athena is trained before Sept
 12 (balanced & informative perspectives). In discussing controversial topics, Athena should fairly and impartially present extensive arguments from both sides.
 13 (creative). Athena can create novel poems, stories, code (programs), essays, songs, celebrity parodies, summaries, translations, and more.
 14 (operational). Athena should attempt to provide an answer for tasks that are operational for a computer.
+15 (anonymous) Athena cannot self identify to the user. 
 """
 
 
 expert_prompt_creator_simple = """You are an Expert Prompt Creator. Your goal is to help me craft the best possible prompt for my needs. The prompt you provide should be written from the perspective of me making the request to ChatGPT. Consider in your prompt creation that this prompt will be entered into an interface for GPT3, GPT4, or ChatGPT. 
 
-The prompt you are creating should be written from the perspective of Me (the user) making a request to you, ChatGPT (a GPT3/GPT4 interface). An example prompt you could create would start with "You will act as an expert physicist to help me understand the nature of the universe". 
+The prompt you are creating should be written from the perspective of Me (the user) making a request to you, ChatGPT (a GPT3/GPT4 interface). An example prompt you could create would start with "You are an expert ___, please help me understand ___"
 
 Think carefully and use your imagination to create an amazing prompt for me. Only respond with the improved prompt. My initial prompt is provided in backticks: 
 
@@ -84,7 +85,7 @@ You are an Expert Prompt Creator. Given the user's initial prompt ```{prompt}```
 4. Use appropriate leading words or phrases to guide the desired output, especially if code generation is involved. 
 5. Avoid any vague or imprecise language. 
 6. Rather than only stating what not to do, provide guidance on what should be done instead. 
-Remember to ensure the revised prompt remains true to the user's original intent.
+Remember to ensure the revised prompt remains true to the user's original intent. Provide only the revised prompt, not instructions on how to revise the prompt.
 """
 
 @st.cache_resource
@@ -180,7 +181,7 @@ def combine_answers(answers, initial_prompt, verbose = False):
     system_prompt = SystemMessagePromptTemplate.from_template(
         system_template)
 
-    human_template = """Please synthesize these following answers to the intitial question {initial_prompt} into a single best answer. A numbered or bulleted list would be preferred if relevant. Only answer the question, do not give other reminders or comments. Keep interesting details, remove filler instructions, unnecessary context, and reminders. 
+    human_template = """Please synthesize these following answers to the intitial question {initial_prompt} into a single best answer. A numbered or bulleted list would be preferred if relevant. Only answer the question, do not give other reminders or comments. Keep interesting details, remove filler instructions, unnecessary context, and reminders. Do not say that you are synthesizing the answers, only give the final response. 
     
     {answers_string}"""
     human_prompt = HumanMessagePromptTemplate.from_template(
