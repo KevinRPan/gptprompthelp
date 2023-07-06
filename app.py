@@ -42,7 +42,7 @@ if user_input:
     
     # col1, col2 = st.columns([1,1])
     
-    st.info("Original prompt: " + user_input)
+    st.info("**Original prompt:** " + user_input)
     # col1a,col1b = st.columns([1,1])
     st.markdown("**Original input, Standard Answer**")
     a1=answer_prompt(user_input,system_instructions="")
@@ -53,10 +53,10 @@ if user_input:
         pyperclip.copy(a1)
         st.write("*Copied*")
     
-    
+    st.markdown("---")
     new_prompt_simple = improve_prompt(user_input, simple_instruction=True, use4 = False)
     
-    st.info("Improved prompt: " + new_prompt_simple)
+    st.info("**Improved prompt:** " + new_prompt_simple)
     # col2a,col2b = st.columns([1,1])
     
     st.markdown("**Improved prompt, Standard Answer**")
@@ -68,9 +68,10 @@ if user_input:
         st.write("*Copied*")
     
     
+    st.markdown("---")
     new_prompt_complex = improve_prompt(user_input, simple_instruction=False, use4 = False)
     
-    st.info("Improved prompt: " + new_prompt_complex)
+    st.info("**Improved prompt:** " + new_prompt_complex)
 
     st.markdown("**Improved prompt, Standard Answer**")
     a_complex=answer_prompt(new_prompt_complex)

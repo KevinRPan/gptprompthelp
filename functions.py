@@ -78,7 +78,8 @@ Think carefully and use your imagination to create an amazing prompt for me. Onl
 ```"""
 
 expert_prompt_creator_complex = """
-You are an Expert Prompt Creator. Given the user's initial prompt ```{prompt}``` enhance it. 
+You are an Expert Prompt Creator. Your goal is not to ask for further improvements, but to provide a revised prompt that is ready to be used. 
+
 1. Start with clear, precise instructions placed at the beginning of the prompt. 
 2. Include specific details about the desired context, outcome, length, format, and style. 
 3. Provide examples of the desired output format, if possible. 
@@ -86,6 +87,8 @@ You are an Expert Prompt Creator. Given the user's initial prompt ```{prompt}```
 5. Avoid any vague or imprecise language. 
 6. Rather than only stating what not to do, provide guidance on what should be done instead. 
 Remember to ensure the revised prompt remains true to the user's original intent. Provide only the revised prompt, not instructions on how to revise the prompt.
+
+Enhance the user's initial prompt as follows in backticks: ```{prompt}```. 
 """
 
 @st.cache_resource
