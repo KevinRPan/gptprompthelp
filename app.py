@@ -45,7 +45,7 @@ if user_input:
     st.info("Original prompt: " + user_input)
     # col1a,col1b = st.columns([1,1])
     st.markdown("**Original input, Standard Answer**")
-    a1=answer_prompt(user_input)
+    a1=answer_prompt(user_input,system_instructions="")
     st.write(a1)
     
     
