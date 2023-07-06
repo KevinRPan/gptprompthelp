@@ -22,8 +22,13 @@ with st.sidebar:
     st.write("After the prompts have been answered, the app will combine the answers into a single answer, presented again at the top of the page.")
     
     st.markdown("---")
+    
     st.write("#### Why use this app?")
     st.write("As Large Language Models become more prevalent, prompt engineering has become hot topic. **GPT Prompt Help** aims to provide everyone an easy way to experience the benefit of improved prompts, and to learn how to improve them for themselves.")
+    
+    
+    st.write("### What happens with what I enter?")
+    st.write("The app uses popular prompt engineering prompts to iterate on the initial prompt, and then proceeds to answer those improved versions in addition to the initial version. All of these are temporary, what is entered and generated cannot be retrieved by anyone, they are not logged by this app nor by the model service.")
     
     st.write("#### Donation info")
     st.write("Generating answers costs money. If you enjoyed using this, please feel free share or to tip me on [PayPal](https://paypal.me/kevinrpan) or [Venmo](https://venmo.com/kevin-pan), or share any comments and feedback to hello@gptprompthelp.com. (I appreciate feedback!)")
