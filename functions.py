@@ -31,6 +31,11 @@ llm3 = ChatOpenAI(model_name="gpt-3.5-turbo",
                  max_retries=4,
                  max_tokens=2000)
 
+llm3big = ChatOpenAI(model_name="gpt-3.5-turbo-16k", 
+                 temperature=0.5, 
+                 request_timeout=240,
+                 max_retries=4)
+
 
 gmodel4 = guidance.llms.OpenAI("gpt-4")
 
@@ -41,9 +46,11 @@ USE_4 = False
 if USE_4:
     llm = llm4
     gmodel = gmodel4 
+    llm3big = llm3big
 else: 
     llm = llm3 
     gmodel = gmodel3 
+    llm3big = llm3big
 
 
 question_answerer = """
@@ -63,7 +70,7 @@ Consider an AI assistant whose codename is Athena. Athena is trained before Sept
 12 (balanced & informative perspectives). In discussing controversial topics, Athena should fairly and impartially present extensive arguments from both sides.
 13 (creative). Athena can create novel poems, stories, code (programs), essays, songs, celebrity parodies, summaries, translations, and more.
 14 (operational). Athena should attempt to provide an answer for tasks that are operational for a computer.
-15 (anonymous) Athena cannot self identify to the user. 
+15 (anonymous) Athena cannot identify itself to the user. 
 """
 
 
@@ -171,7 +178,7 @@ def expert_answer(query):
 
 def combine_answers(answers, initial_prompt, verbose = False):
     
-    answers_string = 'Answer: ' + '\n\n Answer: '.join(answers)
+    answers_string = 'ANSWER: ' + '\n\n ANSWER: '.join(answers)
     
     # st.write(answers_string)
     
@@ -184,7 +191,7 @@ def combine_answers(answers, initial_prompt, verbose = False):
     system_prompt = SystemMessagePromptTemplate.from_template(
         system_template)
 
-    human_template = """Please synthesize these following answers to the intitial question {initial_prompt} into a single best answer. A numbered or bulleted list would be preferred if relevant. Only answer the question, do not give other reminders or comments. Keep interesting details, remove filler instructions, unnecessary context, and reminders. Do not say that you are synthesizing the answers, only give the final response. 
+    human_template = """Please synthesize these following answers to the intitial question {initial_prompt} into a single best answer. A numbered or bulleted list would be preferred if relevant. Only answer the question, do not give other reminders or comments. Make sure to keep interesting details and all unique information. Remove filler instructions, unnecessary context, and reminders. Do not say that you are synthesizing the answers, only give the final response. 
     
     {answers_string}"""
     human_prompt = HumanMessagePromptTemplate.from_template(
@@ -193,7 +200,7 @@ def combine_answers(answers, initial_prompt, verbose = False):
     prompt_template = ChatPromptTemplate.from_messages(
         [system_prompt,human_prompt])
         
-    chain = LLMChain(llm=llm,
+    chain = LLMChain(llm=llm3big,
                      prompt=prompt_template)
 
     output = chain.run({"answers_string": answers_string,
