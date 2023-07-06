@@ -7,7 +7,6 @@ from functions import (
     combine_answers
 )
 
-
 st.set_page_config(
     page_title="GPT Prompt Help",
 )
@@ -32,7 +31,9 @@ with st.sidebar:
 user_input = st.text_input("Ask anything")
 
 if user_input:
-    new_prompt = improve_prompt(user_input)
+    new_prompt_simple = improve_prompt(user_input, simple_instruction=True, use4 = False)
+    new_prompt_complex = improve_prompt(user_input, simple_instruction=False, use4 = False)
+    
     summary = st.container()
     
     # col1, col2, col3, col4 = st.columns([1,1,1,1])
@@ -42,9 +43,10 @@ if user_input:
     st.info("Original prompt: " + user_input)
     col1a,col1b = st.columns([1,1])
     
-    st.info("Improved prompt: " + new_prompt)
+    st.info("Improved prompt: " + new_prompt_simple)
     col2a,col2b = st.columns([1,1])
     
+    st.info("Improved prompt: " + new_prompt_complex)
     
     with col1:
         with col1a:
@@ -70,7 +72,7 @@ if user_input:
         with col2a: 
             st.markdown("**Improved prompt, Standard Answer**")
             a3=answer_prompt(new_prompt)
-            st.write(answer_prompt(new_prompt))
+            st.write(a3)
             
             if st.button("Copy to clipboard",key='a3'):
                 pyperclip.copy(a3)
@@ -79,7 +81,7 @@ if user_input:
         with col2b:
             st.markdown("**Improved prompt, Expert Answer**")
             a4=expert_answer(new_prompt)
-            st.write(expert_answer(new_prompt))
+            st.write(a4)
             
             
             if st.button("Copy to clipboard",key='a4'):
