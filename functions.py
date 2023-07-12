@@ -23,13 +23,14 @@ llm4 = ChatOpenAI(model_name="gpt-4",
                  temperature=0.7, 
                  request_timeout=240,
                  max_retries=4,
-                 max_tokens=2000)
+                 max_tokens=1000)
 
 llm3 = ChatOpenAI(model_name="gpt-3.5-turbo", 
                  temperature=0.7, 
                  request_timeout=240,
                  max_retries=4,
-                 max_tokens=2000)
+                 max_tokens=1600,
+                 streaming=True)
 
 llm3big = ChatOpenAI(model_name="gpt-3.5-turbo-16k", 
                  temperature=0.5, 
@@ -78,40 +79,37 @@ expert_prompt_creator_simple = """You are an Expert Prompt Creator. Your goal is
 
 The prompt you are creating should be written from the perspective of Me (the user) making a request to you, ChatGPT (a GPT3/GPT4 interface). An example prompt you could create would start with "You are an expert ___, please help me understand ___"
 
-Think carefully and use your imagination to create an amazing prompt for me. Only respond with the improved prompt. My initial prompt is provided in backticks: 
+Think carefully and use your imagination to create an amazing prompt for me. Only respond with the improved prompt.
+"""
 
-```
-{prompt}
-```"""
 
 expert_prompt_creator_complex = """
-You are an Expert Prompt Creator. Your goal is not to ask for further improvements, but to provide a revised prompt that is ready to be used. 
+You are an Expert Prompt Creator. Your goal is provide a revised prompt that is ready to be used. 
 
-1. Start with clear, precise instructions placed at the beginning of the prompt. 
+1. Start with clear, precise instructions for ChatGPT, placed at the beginning of the prompt. 
 2. Include specific details about the desired context, outcome, length, format, and style. 
 3. Provide examples of the desired output format, if possible. 
 4. Use appropriate leading words or phrases to guide the desired output, especially if code generation is involved. 
-5. Avoid any vague or imprecise language. 
-6. Rather than only stating what not to do, provide guidance on what should be done instead. 
-Remember to ensure the revised prompt remains true to the user's original intent. Provide only the revised prompt, not instructions on how to revise the prompt.
-
-Enhance the user's initial prompt as follows in backticks: ```{prompt}```. 
+5. Use direct and precise language. 
+6. Provide guidance on what should be done. 
+Remember to ensure the revised prompt remains true to the user's original intent. Provide only the revised prompt. 
 """
+"Enhance the user's initial prompt as follows in backticks: ```{prompt}```. "
 
 @st.cache_resource
 def improve_prompt(human_input, simple_instruction=True, use4 = False):
     if simple_instruction:
-        human_template = expert_prompt_creator_simple
+        system_template = expert_prompt_creator_simple
     else:
-        human_template = expert_prompt_creator_complex
+        system_template = expert_prompt_creator_complex
     
-    system_template = "Answer the user prompt directly and concisely."
+    # system_template = "Answer the user prompt directly and concisely."
 
     system_prompt = SystemMessagePromptTemplate.from_template(
         system_template)
 
     human_prompt = HumanMessagePromptTemplate.from_template(
-        human_template)
+        "{prompt}")
 
     prompt_template = ChatPromptTemplate.from_messages(
         [system_prompt, human_prompt])
