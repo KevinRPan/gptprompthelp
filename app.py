@@ -4,7 +4,8 @@ from functions import (
     improve_prompt,
     answer_prompt,
     expert_answer,
-    combine_answers
+    combine_answers,
+    llm3
 )
 
 st.set_page_config(
@@ -12,9 +13,11 @@ st.set_page_config(
 )
 
 with st.sidebar:
-    st.write("## GPT Prompt Help")
+    st.write("# GPT Prompt Help")
     
-    st.write("This app helps you improve your GPT3/GPT4 prompts, and see the results of potental changes.")
+    st.write("### A.k.a. Do you Need a Prompt Engineer?")
+    
+    st.write("This app helps you see potential improvements your GPT3/GPT4 prompts, and see the results of those potental changes.")
     
     st.write("### How to use this app")
     st.write("Enter any prompt into the box. The app will answer that prompt as is (using GPT3.5), then suggest an improved verison of that prompt, and answer that improved prompt.")
@@ -31,23 +34,34 @@ with st.sidebar:
     st.write("The app uses popular prompt engineering prompts to iterate on the initial prompt, and then proceeds to answer those improved versions in addition to the initial version. All of these are temporary, what is entered and generated cannot be retrieved by anyone, they are not logged by this app nor by the model service.")
     
     st.write("#### Donation info")
-    st.write("Generating answers costs money. If you enjoyed using this, please feel free share or to tip me on [PayPal](https://paypal.me/kevinrpan) or [Venmo](https://venmo.com/kevin-pan), or share any comments and feedback to hello@gptprompthelp.com. (I appreciate feedback!)")
+    st.write("If you enjoyed using this, please feel free to share or to tip me to cover API costs on [PayPal](https://paypal.me/kevinrpan) or [Venmo](https://venmo.com/kevin-pan), or share any comments and feedback to hello@gptprompthelp.com. (I appreciate feedback!)")
     
-user_input = st.text_input("Ask anything")
 
-if user_input:
-    summary = st.container()
+# from langchain.callbacks import StreamlitCallbackHandler
+# from langchain.chains import LLMChain
+# from langchain import PromptTemplate
+
+if user_input := st.chat_input("Ask anything"):
     
-    # col1, col2, col3, col4 = st.columns([1,1,1,1])
+    # st.chat_message("user").write(user_input)
     
-    # col1, col2 = st.columns([1,1])
+    # with st.chat_message("assistant"):
+    #     st_callback = StreamlitCallbackHandler(st.container())
+    #     llm = llm3
+    #     prompt = PromptTemplate.from_template("{prompt}")
+    #     chain = LLMChain(llm=llm,
+    #                         prompt=prompt)
+    #     # response = agent.run(user_input, callbacks=[st_callback])
+    #     response = chain.run(user_input, callbacks=[st_callback])
+    #     st.write(response)
+    
     
     st.info("**Original prompt:** " + user_input)
-    # col1a,col1b = st.columns([1,1])
-    st.markdown("**Original input, Standard Answer**")
+
+    st.markdown("**Original input**")
+    
     a1=answer_prompt(user_input,system_instructions="")
     st.write(a1)
-    
     
     if st.button("Copy to clipboard",key='a1'):
         pyperclip.copy(a1)
@@ -59,7 +73,7 @@ if user_input:
     st.info("**Improved prompt:** " + new_prompt_simple)
     # col2a,col2b = st.columns([1,1])
     
-    st.markdown("**Improved prompt, Standard Answer**")
+    st.markdown("**Improved prompt**")
     a_simple=answer_prompt(new_prompt_simple)
     st.write(a_simple)
     
@@ -73,62 +87,25 @@ if user_input:
     
     st.info("**Improved prompt:** " + new_prompt_complex)
 
-    st.markdown("**Improved prompt, Standard Answer**")
+    st.markdown("**Improved prompt**")
     a_complex=answer_prompt(new_prompt_complex)
     st.write(a_complex)
     
     if st.button("Copy to clipboard",key='a_comp'):
         pyperclip.copy(a_complex)
         st.write("*Copied*")
-    
-    
-    # with col1:
-    #     with col1a:
-            
-    #         st.markdown("**Original input, Standard Answer**")
-    #         a1=answer_prompt(user_input)
-    #         st.write(a1)
-            
-    #         if st.button("Copy to clipboard",key='a1'):
-    #             pyperclip.copy(a1)
-    #             st.write("*Copied*")
-    #     with col1b:
-            
-    #         st.markdown("**Original input, Expert Answer**")
-    #         a2=expert_answer(user_input)
-    #         st.write(a2)
-            
-    #         if st.button("Copy to clipboard",key='a2'):
-    #             pyperclip.copy(a2)
-    #             st.write("*Copied*")
-            
-    # with col2: 
-    #     with col2a: 
-    #         st.markdown("**Improved prompt, Standard Answer**")
-    #         a3=answer_prompt(new_prompt)
-    #         st.write(a3)
-            
-    #         if st.button("Copy to clipboard",key='a3'):
-    #             pyperclip.copy(a3)
-    #             st.write("*Copied*")
-                
-    #     with col2b:
-    #         st.markdown("**Improved prompt, Expert Answer**")
-    #         a4=expert_answer(new_prompt)
-    #         st.write(a4)
-            
-            
-    #         if st.button("Copy to clipboard",key='a4'):
-    #             pyperclip.copy(a4)
-    #             st.write("*Copied*")
+        
+    st.markdown("""---""") 
 
+    summary = st.container()
     with summary:
         st.markdown("**Answer summary**")
         combined = combine_answers([a1,a_simple,a_complex],
                                    user_input)
         st.write(combined)
 
-        st.markdown("""---""") 
         if st.button("Copy to clipboard",key='combined'):
             pyperclip.copy(combined)
             st.write("*Copied*")
+            
+        st.markdown("""---""") 
