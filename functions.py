@@ -10,13 +10,21 @@ from dotenv import dotenv_values
 import os 
 import streamlit as st 
 import guidance 
+import openai 
+
+openai.api_base = "https://oai.hconeai.com/v1"
+
 
 # Load environment variables
 try: 
     os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]
+    os.environ["HELICONE_TOKEN"] = st.secrets["HELICONE_API_KEY"]
+    HELICONE_TOKEN = st.secrets["HELICONE_API_KEY"]
 except: 
     config = dotenv_values(".env")
     os.environ["OPENAI_API_KEY"] = config["OPENAI_API_KEY"]
+    os.environ["HELICONE_TOKEN"] = config["HELICONE_API_KEY"]
+    HELICONE_TOKEN = config["HELICONE_API_KEY"]
 
 
 llm4 = ChatOpenAI(model_name="gpt-4", 
@@ -26,11 +34,15 @@ llm4 = ChatOpenAI(model_name="gpt-4",
                  max_tokens=1000)
 
 llm3 = ChatOpenAI(model_name="gpt-3.5-turbo", 
-                 temperature=0.7, 
-                 request_timeout=240,
-                 max_retries=4,
-                 max_tokens=1600,
-                 streaming=True)
+                  temperature=0.7, 
+                  request_timeout=240,
+                  max_retries=4,
+                  max_tokens=1600,
+                  streaming=True,
+                  headers={
+                      "Helicone-Auth": "Bearer " + HELICONE_TOKEN
+                  }
+    )
 
 llm3big = ChatOpenAI(model_name="gpt-3.5-turbo-16k", 
                  temperature=0.5, 
