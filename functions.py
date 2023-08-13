@@ -108,8 +108,7 @@ Remember to ensure the revised prompt remains true to the user's original intent
 """
 "Enhance the user's initial prompt as follows in backticks: ```{prompt}```. "
 
-@st.cache_resource
-def improve_prompt(human_input, simple_instruction=True, use4 = False):
+def improve_prompt(human_input, callbacks=None, simple_instruction=True, use4 = False):
     if simple_instruction:
         system_template = expert_prompt_creator_simple
     else:
@@ -129,13 +128,13 @@ def improve_prompt(human_input, simple_instruction=True, use4 = False):
     chain = LLMChain(llm=llm,
                      prompt=prompt_template)
 
-    output = chain.run({"prompt": human_input})
+    output = chain.run({"prompt": human_input},
+                        callbacks=callbacks)
     
     return output 
 
 
-@st.cache_resource
-def answer_prompt(human_input, system_instructions = question_answerer, use4 = False):
+def answer_prompt(human_input, callbacks=None, system_instructions = question_answerer, use4 = False):
 
     system_prompt = SystemMessagePromptTemplate.from_template(
         "{instructions}")
@@ -151,7 +150,7 @@ def answer_prompt(human_input, system_instructions = question_answerer, use4 = F
 
     output = chain.run({"instructions": system_instructions,
                         "human_input": human_input,
-                        })
+                        }, callbacks=callbacks)
     
     return output 
 
@@ -186,14 +185,22 @@ def expert_answer(query):
     expert_answer = experts(query=query)
     return expert_answer['answer']
 
-def combine_answers(answers, initial_prompt, verbose = False):
+def combine_answers(answers, initial_prompt, callbacks = None, verbose = False):
     
-    answers_string = 'ANSWER: ' + '\n\n ANSWER: '.join(answers)
+    answers_string = 'ORIGINAL ANSWER: ' + '\n\n NEW ANSWER: '.join(answers)
     
     # st.write(answers_string)
     
     system_instructions = '''
-    You are a helpful and terse assistant. Do not answer the question yourself. Instead, synthesize the answers into a single best answer.
+    You are a helpful and terse assistant. You will receive two answers to a question. 
+
+    First, note the differences in the answers, and say what was unique about each answer.
+    
+    Second, you will synthesize these answers into a single best answer. You will also highlight the areas that are specific to each answer to help the user understand the differences between the answers.
+
+    Only answer the question, do not give other reminders or comments. Make sure to keep interesting details and all unique information. Remove filler instructions, unnecessary context, and reminders. Do not say that you are synthesizing the answers, only give the final response. 
+
+    A numbered or bulleted list would be preferred if relevant. 
     '''
 
     system_template = "{instructions}"
@@ -201,7 +208,7 @@ def combine_answers(answers, initial_prompt, verbose = False):
     system_prompt = SystemMessagePromptTemplate.from_template(
         system_template)
 
-    human_template = """Please synthesize these following answers to the intitial question {initial_prompt} into a single best answer. A numbered or bulleted list would be preferred if relevant. Only answer the question, do not give other reminders or comments. Make sure to keep interesting details and all unique information. Remove filler instructions, unnecessary context, and reminders. Do not say that you are synthesizing the answers, only give the final response. 
+    human_template = """Please synthesize these following answers to the initial question ```{initial_prompt}```into a single best answer and tell me about the differences between the two answers. 
     
     {answers_string}"""
     human_prompt = HumanMessagePromptTemplate.from_template(
@@ -215,6 +222,7 @@ def combine_answers(answers, initial_prompt, verbose = False):
 
     output = chain.run({"answers_string": answers_string,
                         "instructions": system_instructions,
-                        "initial_prompt": initial_prompt})
+                        "initial_prompt": initial_prompt},
+                        callbacks=callbacks)
     
     return output
