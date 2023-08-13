@@ -1,5 +1,10 @@
 import streamlit as st 
 import pyperclip 
+
+st.set_page_config(
+    page_title="GPT Prompt Help",
+)
+
 from functions import (
     improve_prompt,
     answer_prompt,
@@ -7,11 +12,6 @@ from functions import (
     combine_answers,
     llm3
 )
-
-st.set_page_config(
-    page_title="GPT Prompt Help",
-)
-
 with st.sidebar:
     st.write("# GPT Prompt Help")
     
