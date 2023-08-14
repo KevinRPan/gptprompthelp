@@ -10,9 +10,7 @@ st.set_page_config(
 from functions import (
     improve_prompt,
     answer_prompt,
-    expert_answer,
-    combine_answers,
-    llm3
+    combine_answers
 )
 with st.sidebar:
     st.write("# GPT Prompt Help")
@@ -39,84 +37,36 @@ with st.sidebar:
     st.write("The app is now available on Github at https://github.com/KevinRPan/gptprompthelp")
     
 
-# from langchain.callbacks import StreamlitCallbackHandler
-# from langchain.chains import LLMChain
-# from langchain import PromptTemplate
-
 expander = st.expander("Tips")
 expander.write("Try running any question on your mind. The app will try to answer it, and then improve the prompt to see if it can answer it better. For example, _help me understand prompt engineering_.")
 
 if user_input := st.chat_input("Ask anything"):
-    
-    # st.info("**Original prompt:** " + user_input)
 
     st.chat_message("user").write(user_input)
 
     with st.chat_message("assistant"):
         st_callback = StreamlitCallbackHandler(st.container())
         a1 = answer_prompt(user_input, callbacks=[st_callback], system_instructions="")
-        # st.write(a1)
-    
-    # if st.button("Copy to clipboard",key='a1'):
-    #     pyperclip.copy(a1)
-    #     st.write("*Copied*")
-    if one_step_improvement := False:
-        st.markdown("---")
 
-        st.info("**Improved prompt** \n\n The app will now try to improve your prompt.")
-        with st.chat_message("user"):
-            st_callback = StreamlitCallbackHandler(st.container())
-            new_prompt_simple = improve_prompt(user_input, callbacks=[st_callback], simple_instruction=True, use4 = False)
-            # st.write("**Improved prompt:** " + new_prompt_simple)
-        
-        # col2a,col2b = st.columns([1,1])
-        
-        with st.chat_message("assistant"):
-            st_callback = StreamlitCallbackHandler(st.container())
-            a_simple = answer_prompt(new_prompt_simple, callbacks=[st_callback])
-            # st.write(a_simple)
-        
-        # if st.button("Copy to clipboard",key='a_simple'):
-        #     pyperclip.copy(a_simple)
-        #     st.write("*Copied*")
-    
     st.markdown("---")
 
     st.info("**Improved prompt** \n\n The app will now try to improve your prompt.")
     with st.chat_message("user"):
         st_callback = StreamlitCallbackHandler(st.container())
         new_prompt_complex = improve_prompt(user_input, callbacks=[st_callback], simple_instruction=False, use4 = False)
-        # st.write(new_prompt_complex)
-    
 
-    # st.info("**Improved prompt:** " + new_prompt_complex)
     with st.chat_message("assistant"):
         st_callback = StreamlitCallbackHandler(st.container())
         a_complex = answer_prompt(new_prompt_complex, callbacks=[st_callback])
-        # st.write(a_complex)
 
-    # st.markdown("**Improved prompt**")
-    # a_complex=answer_prompt(new_prompt_complex)
-    # st.write(a_complex)
-    
-    # if st.button("Copy to clipboard",key='a_comp'):
-    #     pyperclip.copy(a_complex)
-    #     st.write("*Copied*")
-        
     st.markdown("""---""") 
     with st.chat_message("user"):
         st.write("Describe the difference between these two answers and summarize them into a single answer.")
 
     with st.chat_message("assistant"):
-    # st.markdown("**Answer summary**")
         st_callback = StreamlitCallbackHandler(st.container())
         combined = combine_answers([a1,a_complex],
                                     user_input, 
                                     callbacks=[st_callback])
-        # st.write(combined)
 
-    # if st.button("Copy to clipboard",key='combined'):
-    #     pyperclip.copy(combined)
-    #     st.write("*Copied*")
-        
     st.markdown("""---""") 

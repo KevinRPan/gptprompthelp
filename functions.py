@@ -9,11 +9,9 @@ from langchain.chat_models import ChatOpenAI
 from dotenv import dotenv_values
 import os 
 import streamlit as st 
-import guidance 
 import openai 
 
 openai.api_base = "https://oai.hconeai.com/v1"
-
 
 # Load environment variables
 try: 
@@ -49,18 +47,11 @@ llm3big = ChatOpenAI(model_name="gpt-3.5-turbo-16k",
                  request_timeout=240,
                  max_retries=4)
 
-
-gmodel4 = guidance.llms.OpenAI("gpt-4")
-
-gmodel3 = guidance.llms.OpenAI("gpt-3.5-turbo")
-
 if USE_4 := False: 
     llm = llm4
-    gmodel = gmodel4 
     llm3big = llm3big
 else: 
     llm = llm3 
-    gmodel = gmodel3 
     llm3big = llm3big
 
 
@@ -152,37 +143,6 @@ def answer_prompt(human_input, callbacks=None, system_instructions = question_an
                         }, callbacks=callbacks)
     
     return output 
-
-def expert_answer(query):
-    # gpt4 = guidance.llms.OpenAI("gpt-4")
-
-    experts = guidance('''
-    {{#system~}}
-    You are a helpful and terse assistant.
-    {{~/system}}
-
-    {{#user~}}
-    I want a response to the following question:
-    {{query}}
-    Name 3-5 world-class experts (past or present) who would be great at answering this?
-    Don't answer the question yet.
-    {{~/user}}
-
-    {{#assistant~}}
-    {{gen 'expert_names' temperature=0 max_tokens=300}}
-    {{~/assistant}}
-
-    {{#user~}}
-    Great, now please answer the question as if these experts had collaborated in writing a joint anonymous answer. Do not mention that this was a combined effort from multiple experts, or that you cannot speak for them. Just answer the question as if you were a single expert.
-    {{~/user}}
-
-    {{#assistant~}}
-    {{gen 'answer' temperature=0 max_tokens=1000}}
-    {{~/assistant}}
-    ''', llm=gmodel)
-
-    expert_answer = experts(query=query)
-    return expert_answer['answer']
 
 def combine_answers(answers, initial_prompt, callbacks = None, verbose = False, llm=llm):
     
