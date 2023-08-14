@@ -105,17 +105,17 @@ if user_input := st.chat_input("Ask anything"):
         
     st.markdown("""---""") 
 
-    summary = st.container()
 
-    with summary:
-        st.markdown("**Answer summary**")
+    st.markdown("**Answer summary**")
+    st_callback = StreamlitCallbackHandler(st.container())
+    combined = combine_answers([a1,a_simple,a_complex],
+                                user_input, 
+                                callbacks=[st_callback])
+    st.write(combined)
 
-        combined = combine_answers([a1,a_simple,a_complex],
-                                   user_input)
-        st.write(combined)
-
-        # if st.button("Copy to clipboard",key='combined'):
-        #     pyperclip.copy(combined)
-        #     st.write("*Copied*")
-            
-        st.markdown("""---""") 
+    # if st.button("Copy to clipboard",key='combined'):
+    #     pyperclip.copy(combined)
+    #     st.write("*Copied*")
+        
+    st.markdown("""---""") 
+    
