@@ -28,15 +28,15 @@ with st.sidebar:
     
     st.markdown("---")
     
-    st.write("#### Why use this app?")
+    st.write("### Why use this app?")
     st.write("As Large Language Models become more prevalent, prompt engineering has become hot topic. **GPT Prompt Help** aims to provide everyone an easy way to experience the benefit of improved prompts, and to learn how to improve them for themselves.")
     
     
     st.write("### What happens with what I enter?")
-    st.write("The app uses popular prompt engineering prompts to iterate on the initial prompt, and then proceeds to answer those improved versions in addition to the initial version. All of these are temporary, what is entered and generated cannot be retrieved by anyone, they are not logged by this app nor by the model service.")
+    st.write("The app uses popular prompt engineering prompts to iterate on the initial prompt, and then proceeds to answer those improved versions in addition to the initial version.")
     
-    st.write("#### Donation info")
-    st.write("If you enjoyed using this, please feel free to share or to tip me to cover API costs on [PayPal](https://paypal.me/kevinrpan) or [Venmo](https://venmo.com/kevin-pan), or share any comments and feedback to hello@gptprompthelp.com. (I appreciate feedback!)")
+    st.write("### What are the prompts used?")
+    st.write("The app is now available on Github at https://github.com/KevinRPan/gptprompthelp")
     
 
 # from langchain.callbacks import StreamlitCallbackHandler
@@ -60,29 +60,29 @@ if user_input := st.chat_input("Ask anything"):
     # if st.button("Copy to clipboard",key='a1'):
     #     pyperclip.copy(a1)
     #     st.write("*Copied*")
+    if one_step_improvement := False:
+        st.markdown("---")
+
+        st.info("**Improved prompt** \n\n The app will now try to improve your prompt.")
+        with st.chat_message("user"):
+            st_callback = StreamlitCallbackHandler(st.container())
+            new_prompt_simple = improve_prompt(user_input, callbacks=[st_callback], simple_instruction=True, use4 = False)
+            # st.write("**Improved prompt:** " + new_prompt_simple)
+        
+        # col2a,col2b = st.columns([1,1])
+        
+        with st.chat_message("assistant"):
+            st_callback = StreamlitCallbackHandler(st.container())
+            a_simple = answer_prompt(new_prompt_simple, callbacks=[st_callback])
+            # st.write(a_simple)
+        
+        # if st.button("Copy to clipboard",key='a_simple'):
+        #     pyperclip.copy(a_simple)
+        #     st.write("*Copied*")
     
     st.markdown("---")
 
     st.info("**Improved prompt** \n\n The app will now try to improve your prompt.")
-    with st.chat_message("user"):
-        st_callback = StreamlitCallbackHandler(st.container())
-        new_prompt_simple = improve_prompt(user_input, callbacks=[st_callback], simple_instruction=True, use4 = False)
-        # st.write("**Improved prompt:** " + new_prompt_simple)
-    
-    # col2a,col2b = st.columns([1,1])
-    
-    with st.chat_message("assistant"):
-        st_callback = StreamlitCallbackHandler(st.container())
-        a_simple = answer_prompt(new_prompt_simple, callbacks=[st_callback])
-        # st.write(a_simple)
-    
-    # if st.button("Copy to clipboard",key='a_simple'):
-    #     pyperclip.copy(a_simple)
-    #     st.write("*Copied*")
-    
-    st.markdown("---")
-
-    st.info("**Improved prompt** \n\n The app will now try to improve your prompt once more.")
     with st.chat_message("user"):
         st_callback = StreamlitCallbackHandler(st.container())
         new_prompt_complex = improve_prompt(user_input, callbacks=[st_callback], simple_instruction=False, use4 = False)
@@ -104,18 +104,19 @@ if user_input := st.chat_input("Ask anything"):
     #     st.write("*Copied*")
         
     st.markdown("""---""") 
+    with st.chat_message("user"):
+        st.write("Describe the difference between these two answers and summarize them into a single answer.")
 
-
-    st.markdown("**Answer summary**")
-    st_callback = StreamlitCallbackHandler(st.container())
-    combined = combine_answers([a1,a_simple,a_complex],
-                                user_input, 
-                                callbacks=[st_callback])
-    st.write(combined)
+    with st.chat_message("assistant"):
+    # st.markdown("**Answer summary**")
+        st_callback = StreamlitCallbackHandler(st.container())
+        combined = combine_answers([a1,a_complex],
+                                    user_input, 
+                                    callbacks=[st_callback])
+        # st.write(combined)
 
     # if st.button("Copy to clipboard",key='combined'):
     #     pyperclip.copy(combined)
     #     st.write("*Copied*")
         
     st.markdown("""---""") 
-    

@@ -54,9 +54,7 @@ gmodel4 = guidance.llms.OpenAI("gpt-4")
 
 gmodel3 = guidance.llms.OpenAI("gpt-3.5-turbo")
 
-USE_4 = False
-
-if USE_4:
+if USE_4 := False: 
     llm = llm4
     gmodel = gmodel4 
     llm3big = llm3big
@@ -106,9 +104,10 @@ You are an Expert Prompt Creator. Your goal is provide a revised prompt that is 
 6. Provide guidance on what should be done. 
 Remember to ensure the revised prompt remains true to the user's original intent. Provide only the revised prompt. 
 """
+
 "Enhance the user's initial prompt as follows in backticks: ```{prompt}```. "
 
-def improve_prompt(human_input, callbacks=None, simple_instruction=True, use4 = False):
+def improve_prompt(human_input, callbacks=None, simple_instruction=True, use4 = False, llm=llm):
     if simple_instruction:
         system_template = expert_prompt_creator_simple
     else:
@@ -134,7 +133,7 @@ def improve_prompt(human_input, callbacks=None, simple_instruction=True, use4 = 
     return output 
 
 
-def answer_prompt(human_input, callbacks=None, system_instructions = question_answerer, use4 = False):
+def answer_prompt(human_input, callbacks=None, system_instructions = question_answerer, llm=llm):
 
     system_prompt = SystemMessagePromptTemplate.from_template(
         "{instructions}")
@@ -185,7 +184,7 @@ def expert_answer(query):
     expert_answer = experts(query=query)
     return expert_answer['answer']
 
-def combine_answers(answers, initial_prompt, callbacks = None, verbose = False):
+def combine_answers(answers, initial_prompt, callbacks = None, verbose = False, llm=llm):
     
     answers_string = 'ORIGINAL ANSWER: ' + '\n\n NEW ANSWER: '.join(answers)
     
@@ -217,7 +216,7 @@ def combine_answers(answers, initial_prompt, callbacks = None, verbose = False):
     prompt_template = ChatPromptTemplate.from_messages(
         [system_prompt,human_prompt])
         
-    chain = LLMChain(llm=llm3big,
+    chain = LLMChain(llm=llm,
                      prompt=prompt_template)
 
     output = chain.run({"answers_string": answers_string,
