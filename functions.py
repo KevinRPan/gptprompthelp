@@ -29,13 +29,13 @@ llm4 = ChatOpenAI(model_name="gpt-4",
                  temperature=0.7, 
                  request_timeout=240,
                  max_retries=4,
-                 max_tokens=1000)
+                 max_tokens=400)
 
 llm3 = ChatOpenAI(model_name="gpt-3.5-turbo", 
                   temperature=0.7, 
                   request_timeout=240,
                   max_retries=4,
-                  max_tokens=1600,
+                  max_tokens=1000,
                   streaming=True,
                   headers={
                       "Helicone-Auth": "Bearer " + HELICONE_TOKEN
