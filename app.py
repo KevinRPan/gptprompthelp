@@ -1,7 +1,5 @@
 import streamlit as st 
-import pyperclip 
-
-from langchain.callbacks import StreamlitCallbackHandler
+from langchain.callbacks.streamlit import StreamlitCallbackHandler
 
 st.set_page_config(
     page_title="GPT Prompt Help",
@@ -34,7 +32,7 @@ with st.sidebar:
     st.write("The app uses popular prompt engineering prompts to iterate on the initial prompt, and then proceeds to answer those improved versions in addition to the initial version.")
     
     st.write("### What are the prompts used?")
-    st.write("The app is now available on Github at https://github.com/KevinRPan/gptprompthelp")
+    st.write("The app is now available on [Github](https://github.com/KevinRPan/gptprompthelp).")
     
 
 expander = st.expander("Tips")
