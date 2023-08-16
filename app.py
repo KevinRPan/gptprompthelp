@@ -10,29 +10,34 @@ from functions import (
     answer_prompt,
     combine_answers
 )
+
+sidebar_message = """
+# GPT Prompt Help
+
+### A.k.a. Do you Need a Prompt Engineer?
+This app helps you see potential improvements of your GPT3/GPT4 prompts, and see the results of those changed prompts.
+
+### What this app does:
+1. Enter any prompt into the box. 
+2. The app will answer that prompt, as is (using GPT3.5). 
+3. Next, it will show an altered verison of the initial prompt. 
+4. The app then also answers the new prompt.
+5. Finally, it will summarize the answers and the difference. 
+
+---
+    
+### Why use this app?
+- As Large Language Models become more prevalent, prompt engineering has become hot topic. 
+- **GPT Prompt Help** aims to provide everyone an easy way to experience the benefit of improved prompts.
+- It also helps teach how we can improve prompts for ourselves.
+
+### What are the prompts used?
+The app is now available on [Github](https://github.com/KevinRPan/gptprompthelp).
+
+"""
+
 with st.sidebar:
-    st.write("# GPT Prompt Help")
-    
-    st.write("### A.k.a. Do you Need a Prompt Engineer?")
-    
-    st.write("This app helps you see potential improvements your GPT3/GPT4 prompts, and see the results of those potental changes.")
-    
-    st.write("### How to use this app")
-    st.write("Enter any prompt into the box. The app will answer that prompt as is (using GPT3.5), then suggest an improved verison of that prompt, and answer that improved prompt.")
-    
-    st.write("After the prompts have been answered, the app will combine the answers into a single answer, presented again at the top of the page.")
-    
-    st.markdown("---")
-    
-    st.write("### Why use this app?")
-    st.write("As Large Language Models become more prevalent, prompt engineering has become hot topic. **GPT Prompt Help** aims to provide everyone an easy way to experience the benefit of improved prompts, and to learn how to improve them for themselves.")
-    
-    
-    st.write("### What happens with what I enter?")
-    st.write("The app uses popular prompt engineering prompts to iterate on the initial prompt, and then proceeds to answer those improved versions in addition to the initial version.")
-    
-    st.write("### What are the prompts used?")
-    st.write("The app is now available on [Github](https://github.com/KevinRPan/gptprompthelp).")
+    st.write(sidebar_message)
     
 
 expander = st.expander("Tips")
